@@ -1,14 +1,9 @@
 package com.example.Mylab.DTO;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.example.Mylab.Model.Gender;
+import jakarta.validation.constraints.*;
 
-import java.util.UUID;
-
-public class UserRequest {
+public class PatientRequest {
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName;
@@ -40,5 +35,12 @@ public class UserRequest {
             message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     )
     private String  password ;
+
+    @NotNull(message = "Gender is required")
+    private Gender gender;  // Enum: MALE, FEMALE
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must be numeric and can include country code")
+    private String phone;
 
 }

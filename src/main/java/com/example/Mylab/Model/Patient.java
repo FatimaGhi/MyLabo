@@ -29,5 +29,13 @@ public class Patient {
     private String dateOfBirth;
     @Column(name = "nationalIdNumber",nullable = false, unique = true)
     private String nationalIdNumber;
+    @Column(name = "Gender",nullable = false)
+    private Gender gender;
+    @Column(name = "phone",nullable = false, unique = true)
+    private String phone;
+
+
+    private boolean isVerified = false;
+    private String emailVerificationCode;
 
 }
