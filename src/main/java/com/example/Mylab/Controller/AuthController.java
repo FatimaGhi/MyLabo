@@ -1,0 +1,36 @@
+package com.example.Mylab.Controller;
+
+
+import com.example.Mylab.DTO.PatientRequestForRegester;
+import com.example.Mylab.Model.User;
+import com.example.Mylab.Service.AuthService;
+import com.example.Mylab.shared.GlobalResponse;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.function.EntityResponse;
+
+import java.net.http.HttpRequest;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    private AuthService authService;
+    public AuthController(AuthService authService){
+        this.authService = authService;
+
+    }
+
+    @PostMapping("/SignUp")
+    public ResponseEntity<GlobalResponse<User>> signUp(@Valid @RequestBody  PatientRequestForRegester patientRequestForRegester){
+       User user = authService.SignUp(patientRequestForRegester);
+
+       return new ResponseEntity<GlobalResponse<User>>(new GlobalResponse<User>(user), HttpStatus.CREATED);
+
+    }
+}

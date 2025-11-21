@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 
@@ -17,7 +18,7 @@ public class PatientResponse {
     private UUID id;
     private String firstName;
     private String lastName;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String nationalIdNumber;
     private Gender gender;
     private String phone;

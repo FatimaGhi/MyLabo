@@ -1,10 +1,7 @@
 package com.example.Mylab.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,11 +11,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(name = "Email",nullable = false)
     private  String email;
@@ -27,7 +25,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    @Column(name = "idInfoUser",nullable = false,unique = true)
+    @Column(name = "idInfoUser",unique = true)
     private UUID idInfoUser;
+
+    @Column(name = "isVerified",nullable = false)
+    private boolean isVerified = false;
+
+    @Column(name = "accountCreationToken",nullable = false)
+    private String accountCreationToken;
 
 }

@@ -1,8 +1,22 @@
 package com.example.Mylab.DTO;
 
 import com.example.Mylab.Model.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
+
+
+@Getter
+@Setter
+@AllArgsConstructor
+@Builder
 public class PatientRequestForRegester {
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
@@ -14,10 +28,9 @@ public class PatientRequestForRegester {
     private String lastName;
 
 
-    @NotBlank(message = "Date of birth is required")
-    // Format: yyyy-MM-dd
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Date of birth must be in the format yyyy-MM-dd")
-    private String dateOfBirth;
+    @NotNull(message = "Date of birth is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
 
 
     @NotBlank(message = "National ID number is required")
@@ -37,6 +50,7 @@ public class PatientRequestForRegester {
     private String  password ;
 
     @NotNull(message = "Gender is required")
+    @Enumerated(EnumType.STRING)
     private Gender gender;  // Enum: MALE, FEMALE
 
     @NotBlank(message = "Phone number is required")

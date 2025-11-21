@@ -1,0 +1,28 @@
+meta {
+  name: singup
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/auth/Signin
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "firstName": "fati",
+    "lastName": "elghiouan",
+    "dateOfBirth": "3309-72-68",
+    "nationalIdNumber": "9002254242652769654",
+    "email": "fatimazahrae.elghiouan@etu.uae.ac.ma",
+    "password": "1cLHwXOqiYE$gj@3R4*R6Mfbwv",
+    "gender": "MALE",
+    "phone": "+06556818974736"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
