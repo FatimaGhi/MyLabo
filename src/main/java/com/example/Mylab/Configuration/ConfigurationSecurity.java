@@ -53,7 +53,8 @@ public class ConfigurationSecurity {
                                 "/auth/SignUp",
                                 "/auth/SignIn",
                                 "/auth/verify",
-                                "/auth/refrech"
+                                "/auth/Refresh",
+                                "/Patients/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

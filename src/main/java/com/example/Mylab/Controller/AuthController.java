@@ -51,7 +51,7 @@ public class AuthController {
         return new ResponseEntity<GlobalResponse<Map<String,String>>>(new GlobalResponse<Map<String,String>>(token), HttpStatus.OK);
 
     }
-    @PostMapping("/refrech")
+    @PostMapping("/Refresh")
     public ResponseEntity<GlobalResponse<Map<String,String>>> refrech(@RequestHeader("Authorization") String tokenR){
         if (tokenR.startsWith("Bearer ")) {
             tokenR = tokenR.substring(7);
