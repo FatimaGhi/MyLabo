@@ -30,7 +30,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
             .builder()
             .username(userDB.getUsername())
             .password(userDB.getPassword())
-            .authorities(new SimpleGrantedAuthority(userDB.getRole().getRolename().toString()))
+            .authorities(userDB.getAuthorities())
             .build();
     }
 }

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -110,9 +111,9 @@ public class AuthService {
                 .issuer("MyLabo")
                 .issuedAt(instant)
                 .expiresAt(instant.plus(2, ChronoUnit.MINUTES))
-                .claim("scope",authenticate.getAuthorities().toString())
+                .claim("scope", authenticate.getAuthorities())
                 .build();
-        System.out.println("^^^^^^^^^^^^ : "+authenticate.getAuthorities().toString());
+        System.out.println("^^^^^^^^^^^^ : "+ jwtClaimsSet_acessToken.getClaims());
 
         String Access_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_acessToken)).getTokenValue();
 
@@ -158,7 +159,7 @@ public class AuthService {
                 .issuer("Mylabo")
                 .issuedAt(instant)
                 .expiresAt(instant.plus(2, ChronoUnit.MINUTES))
-                .claim("scope",userDetails.getAuthorities().toString())
+                .claim("scope", userDetails.getAuthorities())
                 .build();
 
         String Access_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_acessToken)).getTokenValue();

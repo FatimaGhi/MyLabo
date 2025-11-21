@@ -8,6 +8,7 @@ import com.example.Mylab.shared.GlobalResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,18 +23,21 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<GlobalResponse<PatientResponse>> getOnePatient(@RequestParam UUID id) {
         PatientResponse patientResponse = patientService.getOnePatient(id);
         return new ResponseEntity<GlobalResponse<PatientResponse>>(new GlobalResponse<PatientResponse>(patientResponse), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<GlobalResponse<List<PatientResponse>>> getOnePatient() {
         List<PatientResponse> patientResponse = patientService.getAllPAtients();
         return new ResponseEntity<GlobalResponse<List<PatientResponse>>>(new GlobalResponse<List<PatientResponse>>(patientResponse), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<GlobalResponse<String>> deletePatient(@RequestParam UUID id) {
         patientService.DeletePatient(id);
@@ -41,6 +45,7 @@ public class PatientController {
 
     }
 
+    @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{id}")
     public ResponseEntity<GlobalResponse<PatientResponse>> updatePatient(@RequestParam UUID id, @RequestBody PatientRequest patientRequest) {
         PatientResponse patientResponse = patientService.UpdatePatient(patientRequest,id);
