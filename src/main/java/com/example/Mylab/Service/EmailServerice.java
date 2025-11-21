@@ -23,7 +23,7 @@ public class EmailServerice {
     private String from;
 
     public void sendAccountCreationEmail(String to,String token){
-        String link = ORIGIN + "/auth/SingIn?token=" + token;
+        String link = ORIGIN + "?token=" + token;
         SimpleMailMessage message= new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);

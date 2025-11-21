@@ -4,14 +4,12 @@ package com.example.Mylab.Controller;
 import com.example.Mylab.DTO.PatientRequestForRegester;
 import com.example.Mylab.Model.User;
 import com.example.Mylab.Service.AuthService;
+import com.example.Mylab.shared.CustomResponseException;
 import com.example.Mylab.shared.GlobalResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
 import java.net.http.HttpRequest;
@@ -31,6 +29,16 @@ public class AuthController {
        User user = authService.SignUp(patientRequestForRegester);
 
        return new ResponseEntity<GlobalResponse<User>>(new GlobalResponse<User>(user), HttpStatus.CREATED);
+
+    }
+    @GetMapping("/verify")
+    public ResponseEntity<GlobalResponse<String>> verifyAccount(@RequestParam String token) {
+        try {
+            authService.verify(token);
+            return new ResponseEntity<>(new GlobalResponse<>(" your Account is verfied "), HttpStatus.OK);
+        } catch (CustomResponseException e) {
+            return new ResponseEntity<>(new GlobalResponse<>(e.getMessage()),HttpStatus.BAD_REQUEST);
+        }
 
     }
 }

@@ -34,7 +34,8 @@ public class ConfigurationSecurity {
                         ).permitAll()
                         .requestMatchers(
                                 "/auth/SignUp",
-                                "/auth/SignIn"
+                                "/auth/SignIn",
+                                "/auth/verify"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

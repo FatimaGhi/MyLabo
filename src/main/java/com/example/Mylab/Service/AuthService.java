@@ -9,10 +9,12 @@ import com.example.Mylab.Model.RoleName;
 import com.example.Mylab.Model.User;
 import com.example.Mylab.Repository.RoleRepo;
 import com.example.Mylab.Repository.UserRepo;
+import com.example.Mylab.shared.CustomResponseException;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -68,5 +70,21 @@ public class AuthService {
 
         return user ;
 
+    }
+
+    public void verify(String token){
+        User user = userRepo.findByAccountCreationToken(token)
+                .orElseThrow(() -> CustomResponseException.ResourceNotFound("don't found this Token "));
+
+
+        if (user.isVerified()) {
+            throw CustomResponseException.Conflict(" this account is already verified");
+        }
+
+        user.setVerified(true);
+
+        user.setAccountCreationToken("");
+
+        userRepo.save(user);
     }
 }

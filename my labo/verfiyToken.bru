@@ -1,0 +1,19 @@
+meta {
+  name: verfiyToken
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/auth/verify?token=cbdaf4d4-7593-4abe-ab1f-df807f5a7972
+  body: none
+  auth: inherit
+}
+
+params:query {
+  token: cbdaf4d4-7593-4abe-ab1f-df807f5a7972
+}
+
+settings {
+  encodeUrl: true
+}
