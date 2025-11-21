@@ -32,7 +32,7 @@ public class AuthController {
 
     }
     @GetMapping("/verify")
-    public ResponseEntity<GlobalResponse<String>> verifyAccount(@RequestParam String token) {
+    public ResponseEntity<GlobalResponse<String>> verifyAccount(@RequestBody String token) {
         try {
             authService.verify(token);
             return new ResponseEntity<>(new GlobalResponse<>(" your Account is verfied "), HttpStatus.OK);

@@ -42,6 +42,10 @@ public class AuthService {
         // ADD check is already Email in database
 //        **************************************************************
 
+        if(userRepo.existsByEmail(patientRequestForRegester.getEmail())){
+            throw CustomResponseException.Conflict("this Email is already used");
+        }
+
         // add Data to User
         User user = User.builder().email(patientRequestForRegester.getEmail()).password(passwordEncoder.encode(patientRequestForRegester.getPassword())).build();
         user.setRole(roleRepo.findByRolename(RoleName.PATIENT));
@@ -73,6 +77,11 @@ public class AuthService {
     }
 
     public void verify(String token){
+
+        if(token == null){
+            throw  CustomResponseException.BadRequest(" token is required");
+        }
+
         User user = userRepo.findByAccountCreationToken(token)
                 .orElseThrow(() -> CustomResponseException.ResourceNotFound("don't found this Token "));
 
