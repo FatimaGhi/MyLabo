@@ -2,6 +2,7 @@ package com.example.Mylab.Controller;
 
 
 import com.example.Mylab.DTO.PatientRequestForRegester;
+import com.example.Mylab.DTO.UserRequest;
 import com.example.Mylab.Model.User;
 import com.example.Mylab.Service.AuthService;
 import com.example.Mylab.shared.CustomResponseException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
 import java.net.http.HttpRequest;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,4 +43,22 @@ public class AuthController {
         }
 
     }
+
+
+    @PostMapping("/SignIn")
+    public ResponseEntity<GlobalResponse<Map<String,String>>> signIn(@Valid @RequestBody UserRequest userRequest){
+        Map<String,String> token = authService.SingIn(userRequest);
+        return new ResponseEntity<GlobalResponse<Map<String,String>>>(new GlobalResponse<Map<String,String>>(token), HttpStatus.OK);
+
+    }
+    @PostMapping("/refrech")
+    public ResponseEntity<GlobalResponse<Map<String,String>>> refrech(@RequestHeader("Authorization") String tokenR){
+        if (tokenR.startsWith("Bearer ")) {
+            tokenR = tokenR.substring(7);
+        }
+        Map<String,String> token = authService.refresh(tokenR);
+        return new ResponseEntity<GlobalResponse<Map<String,String>>>(new GlobalResponse<Map<String,String>>(token), HttpStatus.OK);
+
+    }
+
 }

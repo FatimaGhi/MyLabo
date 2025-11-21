@@ -4,6 +4,7 @@ package com.example.Mylab.Service;
 import com.example.Mylab.DTO.PatientRequest;
 import com.example.Mylab.DTO.PatientRequestForRegester;
 import com.example.Mylab.DTO.PatientResponse;
+import com.example.Mylab.DTO.UserRequest;
 import com.example.Mylab.Mapper.PatientMapper;
 import com.example.Mylab.Model.RoleName;
 import com.example.Mylab.Model.User;
@@ -11,9 +12,21 @@ import com.example.Mylab.Repository.RoleRepo;
 import com.example.Mylab.Repository.UserRepo;
 import com.example.Mylab.shared.CustomResponseException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,23 +38,30 @@ public class AuthService {
     private UserRepo userRepo;
     private PatientService patientService;
     private PatientMapper patientMapper;
+    private AuthenticationManager authenticationManager;
+    private JwtEncoder jwtEncoder;
+    private JwtDecoder jwtDecoder;
+    private UserDetailsServiceImp userDetailsServiceImp;
 
 
-    public AuthService(PatientMapper patientMapper, PatientService patientService, PasswordEncoder passwordEncoder, EmailServerice emailServerice , RoleRepo roleRepo, UserRepo userRepo){
+
+    public AuthService(UserDetailsServiceImp userDetailsServiceImp,JwtEncoder jwtEncoder,JwtDecoder jwtDecoder,AuthenticationManager authenticationManager,PatientMapper patientMapper, PatientService patientService, PasswordEncoder passwordEncoder, EmailServerice emailServerice , RoleRepo roleRepo, UserRepo userRepo){
         this.passwordEncoder= passwordEncoder;
         this.emailServerice=emailServerice;
         this.roleRepo = roleRepo;
         this.userRepo = userRepo;
         this.patientService = patientService ;
         this.patientMapper = patientMapper ;
+        this.authenticationManager =authenticationManager;
+        this.jwtEncoder=jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
+        this.userDetailsServiceImp = userDetailsServiceImp;
 
     }
 
     @Transactional
     public User  SignUp(PatientRequestForRegester patientRequestForRegester){
         // ADD check is already Email in database
-//        **************************************************************
-
         if(userRepo.existsByEmail(patientRequestForRegester.getEmail())){
             throw CustomResponseException.Conflict("this Email is already used");
         }
@@ -53,8 +73,6 @@ public class AuthService {
         user.setVerified(false);
 
         user.setAccountCreationToken(token);
-        System.out.println(" &&&&&&&&&&&&&&&&&&&&&&&&&&& patientRequestForRegester :   "+patientRequestForRegester.getDateOfBirth());
-
         //save user in DAtaBase
         userRepo.save(user);
 
@@ -63,9 +81,6 @@ public class AuthService {
 
         //is email valid create patient
         PatientRequest patientRequest = patientMapper.PatientRequestForRegester_TO_PatientRequest(patientRequestForRegester);
-
-        System.out.println(" &&&&&&&&&&&&&&&&&&&&&&&&&&& patientRequest :   "+patientRequest.getDateOfBirth());
-
 
         PatientResponse patientResponse = patientService.CreatePatient(patientRequest);
 
@@ -76,6 +91,84 @@ public class AuthService {
 
     }
 
+
+    public Map<String,String> SingIn(UserRequest userRequest){
+        Map<String,String>  ID_token = new HashMap<>();
+        Instant instant = Instant.now();
+
+
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userRequest.getEmail(),userRequest.getPassword()
+                ));
+
+        // création des ID Token
+        //1 -Acess token
+
+        JwtClaimsSet jwtClaimsSet_acessToken = JwtClaimsSet.builder()
+                .subject(authenticate.getName())
+                .issuer("MyLabo")
+                .issuedAt(instant)
+                .expiresAt(instant.plus(2, ChronoUnit.MINUTES))
+                .claim("scope",authenticate.getAuthorities().toString())
+                .build();
+        System.out.println("^^^^^^^^^^^^ : "+authenticate.getAuthorities().toString());
+
+        String Access_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_acessToken)).getTokenValue();
+
+        // refresh token
+
+        JwtClaimsSet jwtClaimsSet_refreshToken = JwtClaimsSet.builder()
+                .subject(authenticate.getName())
+                .issuer("MyLabo")
+                .issuedAt(instant)
+                .expiresAt(instant.plus(15, ChronoUnit.MINUTES))
+                .build();
+
+        String Refresh_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_refreshToken)).getTokenValue();
+
+        ID_token.put("Access_Token",Access_token);
+        ID_token.put("Refresh_Token",Refresh_token);
+
+        return ID_token;
+    }
+
+    public Map<String,String>  refresh(String refreshToken){
+        Map<String,String> ID_Token= new HashMap<>();
+        String email = jwtDecoder.decode(refreshToken).getSubject();
+
+        if (refreshToken == null){
+           throw CustomResponseException.BadRequest(" Refresh Token is requered ");
+        }
+
+        UserDetails userDetails = userDetailsServiceImp.loadUserByUsername(email);
+        Instant instant = Instant.now();
+        // create new  refresh Token
+        JwtClaimsSet jwtClaimsSet_refreshToken = JwtClaimsSet.builder()
+                .subject(userDetails.getUsername())
+                .issuer("MyLabo")
+                .issuedAt(instant)
+                .expiresAt(instant.plus(15, ChronoUnit.MINUTES))
+                .build();
+
+        String Refresh_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_refreshToken)).getTokenValue();
+
+        JwtClaimsSet jwtClaimsSet_acessToken = JwtClaimsSet.builder()
+                .subject(userDetails.getUsername())
+                .issuer("Mylabo")
+                .issuedAt(instant)
+                .expiresAt(instant.plus(2, ChronoUnit.MINUTES))
+                .claim("scope",userDetails.getAuthorities().toString())
+                .build();
+
+        String Access_token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet_acessToken)).getTokenValue();
+
+        ID_Token.put("Access_Token",Access_token);
+        ID_Token.put("Refresh_Token",Refresh_token);
+        return ID_Token;
+
+    }
+    // for verified account
     public void verify(String token){
 
         if(token == null){
@@ -96,4 +189,7 @@ public class AuthService {
 
         userRepo.save(user);
     }
+
+
+
 }
