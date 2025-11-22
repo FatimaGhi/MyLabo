@@ -25,7 +25,7 @@ public class PatientController {
 
     @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
     @GetMapping("/{id}")
-    public ResponseEntity<GlobalResponse<PatientResponse>> getOnePatient(@RequestParam UUID id) {
+    public ResponseEntity<GlobalResponse<PatientResponse>> getOnePatient(@PathVariable  UUID id) {
         PatientResponse patientResponse = patientService.getOnePatient(id);
         return new ResponseEntity<GlobalResponse<PatientResponse>>(new GlobalResponse<PatientResponse>(patientResponse), HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class PatientController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<GlobalResponse<String>> deletePatient(@RequestParam UUID id) {
+    public ResponseEntity<GlobalResponse<String>> deletePatient(@PathVariable  UUID id) {
         patientService.DeletePatient(id);
         return new ResponseEntity<GlobalResponse<String>>(new GlobalResponse<String>(id + " is delete "), HttpStatus.OK);
 
@@ -47,7 +47,7 @@ public class PatientController {
 
     @PreAuthorize("hasRole('PATIENT')")
     @PutMapping("/{id}")
-    public ResponseEntity<GlobalResponse<PatientResponse>> updatePatient(@RequestParam UUID id, @RequestBody PatientRequest patientRequest) {
+    public ResponseEntity<GlobalResponse<PatientResponse>> updatePatient(@PathVariable UUID id, @RequestBody PatientRequest patientRequest) {
         PatientResponse patientResponse = patientService.UpdatePatient(patientRequest,id);
         return new ResponseEntity<GlobalResponse<PatientResponse>>(new GlobalResponse<PatientResponse>(patientResponse), HttpStatus.OK);
     }

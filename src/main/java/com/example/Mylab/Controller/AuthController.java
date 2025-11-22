@@ -1,8 +1,10 @@
 package com.example.Mylab.Controller;
 
 
+import com.example.Mylab.DTO.EmployerRequest;
 import com.example.Mylab.DTO.PatientRequestForRegester;
 import com.example.Mylab.DTO.UserRequest;
+import com.example.Mylab.Model.RoleName;
 import com.example.Mylab.Model.User;
 import com.example.Mylab.Service.AuthService;
 import com.example.Mylab.shared.CustomResponseException;
@@ -11,9 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 
-import java.net.http.HttpRequest;
 import java.util.Map;
 
 @RestController
@@ -29,10 +29,9 @@ public class AuthController {
     @PostMapping("/SignUp")
     public ResponseEntity<GlobalResponse<User>> signUp(@Valid @RequestBody  PatientRequestForRegester patientRequestForRegester){
        User user = authService.SignUp(patientRequestForRegester);
-
        return new ResponseEntity<GlobalResponse<User>>(new GlobalResponse<User>(user), HttpStatus.CREATED);
-
     }
+
     @GetMapping("/verify")
     public ResponseEntity<GlobalResponse<String>> verifyAccount(@RequestBody String token) {
         try {
@@ -60,5 +59,12 @@ public class AuthController {
         return new ResponseEntity<GlobalResponse<Map<String,String>>>(new GlobalResponse<Map<String,String>>(token), HttpStatus.OK);
 
     }
+
+    @PostMapping("/createEmployer")
+    public ResponseEntity<GlobalResponse<User>> createEmployer(@Valid @RequestBody  EmployerRequest employerRequest ) {
+        User user = authService.CreateEmployer(employerRequest);
+        return new ResponseEntity<GlobalResponse<User>>(new GlobalResponse<User>(user), HttpStatus.CREATED);
+    }
+
 
 }

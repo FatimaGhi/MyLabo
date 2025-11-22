@@ -9,6 +9,7 @@ import com.example.Mylab.Model.User;
 import com.example.Mylab.Repository.PatientRepo;
 import com.example.Mylab.Repository.UserRepo;
 import com.example.Mylab.shared.CustomResponseException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class PatientService {
 
     }
 
-
+    @Transactional
     public void DeletePatient(UUID id){
         Patient patient = patientRepo.findById(id).orElseThrow( ()-> CustomResponseException.ResourceNotFound(id +" not found "));
         User user = userRepo.findByidInfoUser(patient.getId()).orElseThrow(() -> CustomResponseException.ResourceNotFound(id + " don't exist in Users"));

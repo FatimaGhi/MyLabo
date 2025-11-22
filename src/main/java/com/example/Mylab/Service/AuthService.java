@@ -1,11 +1,9 @@
 package com.example.Mylab.Service;
 
 
-import com.example.Mylab.DTO.PatientRequest;
-import com.example.Mylab.DTO.PatientRequestForRegester;
-import com.example.Mylab.DTO.PatientResponse;
-import com.example.Mylab.DTO.UserRequest;
+import com.example.Mylab.DTO.*;
 import com.example.Mylab.Mapper.PatientMapper;
+import com.example.Mylab.Model.Role;
 import com.example.Mylab.Model.RoleName;
 import com.example.Mylab.Model.User;
 import com.example.Mylab.Repository.RoleRepo;
@@ -15,7 +13,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -28,7 +25,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -189,6 +185,21 @@ public class AuthService {
         user.setAccountCreationToken("");
 
         userRepo.save(user);
+    }
+
+//    public void CreatEmplByAdmin()
+    @Transactional
+    public User CreateEmployer(EmployerRequest employerRequest){
+
+        if(userRepo.existsByEmail(employerRequest.getEmail())){
+            throw CustomResponseException.Conflict("this Email is already used");
+        }
+        User user = User.builder().email(employerRequest.getEmail()).password(passwordEncoder.encode(employerRequest.getPassword())).build();
+        user.setRole(roleRepo.findByRolename(employerRequest.getRoleName()));
+        user.setVerified(true);
+        user.setAccountCreationToken(" ");
+
+        return userRepo.save(user);
     }
 
 

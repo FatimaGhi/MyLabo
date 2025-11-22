@@ -56,6 +56,7 @@ public class ConfigurationSecurity {
                                 "/auth/SignIn",
                                 "/auth/verify",
                                 "/auth/Refresh",
+                                "/auth/createEmployer",
                                 "/Patients/**"
                         ).permitAll()
                         .anyRequest().authenticated()
