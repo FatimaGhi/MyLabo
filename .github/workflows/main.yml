@@ -26,17 +26,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # SonarQube container
-      sonarqube:
-        image: sonarqube:lts
-        ports:
-          - 9000:9000
-        options: >-
-          --health-cmd="curl -f http://localhost:9000 || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -61,4 +50,4 @@ jobs:
       - name: SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar -Dsonar.projectKey=workflowDSQ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN
+        run: mvn sonar:sonar -Dsonar.projectKey=workflowDSQ -Dsonar.host.url=https://dirgeful-protogynous-leonore.ngrok-free.dev -Dsonar.login=$SONAR_TOKEN
