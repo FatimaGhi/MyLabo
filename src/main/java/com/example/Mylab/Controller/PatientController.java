@@ -32,7 +32,7 @@ public class PatientController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<GlobalResponse<List<PatientResponse>>> getOnePatient() {
+    public ResponseEntity<GlobalResponse<List<PatientResponse>>> getALlPatient() {
         List<PatientResponse> patientResponse = patientService.getAllPAtients();
         return new ResponseEntity<GlobalResponse<List<PatientResponse>>>(new GlobalResponse<List<PatientResponse>>(patientResponse), HttpStatus.OK);
     }

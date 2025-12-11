@@ -5,11 +5,19 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/auth/SignUp
-  body: none
+  url: http://localhost:8080/auth/SignIn
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "email": "fatimazahraeelghiouan69@gmail.com",
+    "password": "1cLHwXOqiYE$gj@3R4*R6Mfbwv"
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

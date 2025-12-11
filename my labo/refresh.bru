@@ -5,11 +5,16 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/auth/
+  url: http://localhost:8080/auth/Refresh
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJNeUxhYm8iLCJzdWIiOiJmYXRpbWF6YWhyYWUuZWxnaGlvdWFuQGV0dS51YWUuYWMubWEiLCJleHAiOjE3NjM3NTgxNDUsImlhdCI6MTc2Mzc1NzI0NX0.RcrDkNEBQxRJYlJ0qA8KiYVun-yPRLkXqs8vCCAvSwMVpCLyjVqQdmb0m1mMxh0GRKp7AT0hqvDFDYxV6Oje6czW-fJA_79gyaqBWGa3wqM6X_jah8FFuqfUPJYz_WRFK49eTvXp25yPcw4IkLqYpgpystBy5ULPe6QYTbcDKyAFCqoMNiKxC-bhAjNd_hMMlNlZwswzFmmVfbDP9XaVrot_8eXKDxvGSXlYqPdWI8TMRJ0XtSCi5ywo_vDaNF0u4TBFc6Byez_u4hXt5nCF2x9XknxF8NhH4E9k6w3Pvh2wOa8Nfx1kt5zdHM8zvNWCTwaOy7MRhHBWZzK8OoNOKA
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
