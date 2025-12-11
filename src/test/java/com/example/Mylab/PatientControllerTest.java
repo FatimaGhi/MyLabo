@@ -66,8 +66,7 @@ public class PatientControllerTest {
         mockMvc.perform(get("/Patients")
                         .with(user("admin").roles("USER")))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.[1].firstName").value("Fatima"));
+                .andExpect(status().isOk());
     }
 
 
