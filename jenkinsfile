@@ -1,0 +1,42 @@
+pipeline {
+    agent {
+        docker {
+            image 'my-maven-git:latest'
+            args '-v maven-repo:/root/.m2'
+        }
+    }
+    options {
+        skipDefaultCheckout(false)
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                deleteDir()
+                checkout scm
+            }
+        }
+        stage('Build & Test') {
+            steps {
+                script {
+                    echo "Current directory: ${pwd()}"
+                    sh 'mvn clean test package'
+                }
+            }
+        }
+        stage('Dependency-Check') {
+            steps {
+                sh 'mvn org.owasp:dependency-check-maven:check'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/dependency-check-report.html', allowEmptyArchive: true
+                }
+            }
+        }
+        stage('Run') {
+            steps {
+                sh 'java -jar target/maven-0.0.1-SNAPSHOT.jar'
+            }
+        }
+    }
+}
