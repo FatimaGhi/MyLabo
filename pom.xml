@@ -109,6 +109,32 @@
 	<build>
 		<plugins>
 			<plugin>
+    <groupId>org.owasp</groupId>
+    <artifactId>dependency-check-maven</artifactId>
+    <version>12.1.9</version> <!-- Vérifie la dernière version disponible -->
+    <executions>
+        <execution>
+            <id>check-dependencies</id>
+            <goals>
+                <goal>check</goal>
+            </goals>
+            <phase>verify</phase> <!-- S'exécute pendant mvn verify -->
+        </execution>
+    </executions>
+    <configuration>
+        <!-- Format des rapports : HTML, XML, JSON, CSV -->
+        <format>ALL</format>
+        <!-- Dossier de sortie du rapport -->
+        <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+        <!-- Bloque le build si CVSS >= 7 -->
+        <failBuildOnCVSS>7</failBuildOnCVSS>
+        <!-- Analyse transitive -->
+        <analyzeTransitive>true</analyzeTransitive>
+        <!-- Base de données locale -->
+        <dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
+    </configuration>
+</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
