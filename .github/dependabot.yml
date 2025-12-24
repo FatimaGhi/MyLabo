@@ -6,8 +6,8 @@ updates:
     directory: "."          # Chemin du pom.xml
     schedule:
       interval: "daily"    # daily | weekly | monthly
-      day: "thursday"
-      time: "06:00"
+      day: "wednesday"
+      time: "07:01"
       timezone: "Africa/Casablanca"
 
     open-pull-requests-limit: 5
